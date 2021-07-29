@@ -1,4 +1,6 @@
-import { Flex, Text, Input, Icon, HStack, Box, Avatar } from '@chakra-ui/react';
+import { Flex, Icon, IconButton, useBreakpointValue } from '@chakra-ui/react';
+import { RiMenuLine } from 'react-icons/ri';
+import { useSiderbarDrawer } from '../../contexts/SidebarDrawerContext';
 
 import { Logo } from './Logo';
 import { NotificationsNav } from './NotificationsNav';
@@ -6,6 +8,12 @@ import { Profile } from './Profile';
 import { SearchBox } from './SearchBox';
 
 export function Header(){
+    const { onOpen } = useSiderbarDrawer();
+
+    const isWideVersion = useBreakpointValue({
+        base: false, //Para tela mobile, nao quero inf do perfil
+        lg: true //se a tela estiver grande pode retornar true pq quero as inf do perfil
+    })
 
     return(
         <Flex 
@@ -18,10 +26,21 @@ export function Header(){
         px="6"
         align="center"
         >
+
+            {! isWideVersion && (
+                 <IconButton
+                 aria-label="Open navigation"
+                 icon={<Icon as={RiMenuLine}/>}
+                 fontSize="24"
+                 variant="unstyled"
+                 onClick={onOpen}
+                 mr="2"
+               />
+            )}
             
           <Logo />
-
-            <SearchBox />
+            {isWideVersion && ( <SearchBox /> )}
+           
 
             <Flex
              align="center"
@@ -29,7 +48,7 @@ export function Header(){
             >
                 <NotificationsNav />
 
-               <Profile />
+               <Profile showProfileData={isWideVersion} />
             </Flex>
         </Flex>
     );
