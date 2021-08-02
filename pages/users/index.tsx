@@ -1,23 +1,28 @@
-import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Heading, Icon, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from "@chakra-ui/react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
+import { useQuery } from 'react-query';
+
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { SideBar } from "../../components/Sidebar";
 
 export default function UserList(){
 
+    const {data, isLoading, error} = useQuery('users', async ()=>{//salva em cache os dados dessa requisicao em "users"
+        const response = await fetch("http://localhost:3000/api/users");
+        const data = await response.json();
+
+        return data;
+    }); 
+
     const isWideVersion = useBreakpointValue({
         base: false,
         lg: true
     })
 
-    useEffect(()=>{
-        fetch("http://localhost:3000/api/users")
-        .then(response=> response.json())
-        .then(data => console.log(data))
-    },[])
+   
 
     return(
         <Box>
@@ -40,7 +45,17 @@ export default function UserList(){
                             </Button>
                        </Link>
                     </Flex>
-                
+                { isLoading ? (
+                    <Flex justify="center">
+                        <Spinner />
+                    </Flex>
+                ) : error ? ( //Execute isso se nao esta no loading e se acoteceu erro
+                    <Flex justify="center">
+                        <Text>Falha ao obter dados dos usuários.</Text>
+                    </Flex>
+                ) : (
+                    <>
+
                     <Table colorScheme="whiteAlpha">
                         <Thead>
                             <Tr>
@@ -83,6 +98,9 @@ export default function UserList(){
                         </Tbody>
                     </Table>
                     <Pagination />
+                
+                    </>
+                )}
                 </Box>
 
             </Flex>
