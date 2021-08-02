@@ -7,8 +7,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'; //cache
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { SidebarDrawerProvider } from '../contexts/SidebarDrawerContext';
 import { makeServer } from '../services/mirage';
+import { queryClient } from '../services/queryClient';
 
-const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
 

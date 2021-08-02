@@ -57,6 +57,8 @@ export function makeServer(){
 
 
             }); //Shorthands => O miragejs entende pelo nome da rota que deve retornar todos os itens da tabela com o nome da rota
+            
+            this.get("/users/:id");
             this.post("/users"); //Shorthands => O miragejs entende pelo nome da rota que deve adicionar um item na tabela com o nome da rota
             
             this.namespace = '' ;
