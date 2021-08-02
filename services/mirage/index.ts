@@ -30,7 +30,7 @@ export function makeServer(){
         },
 
         seeds(server){ //Dados iniciais na api fake
-            server.createList('user', 200); //nome da factories que deve criar e quantidade
+            server.createList('user', 10); //nome da factories que deve criar e quantidade
         },
 
         routes(){
