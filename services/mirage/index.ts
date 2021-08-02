@@ -1,4 +1,4 @@
-import {  createServer, Factory, Model, Response } from 'miragejs';
+import {  ActiveModelSerializer, createServer, Factory, Model, Response } from 'miragejs';
 import faker from 'faker'; //Lib que cria dados fakes
 
 type User = {
@@ -9,6 +9,10 @@ type User = {
 
 export function makeServer(){
     const server = createServer({
+        serializers: {
+            application: ActiveModelSerializer,
+        },
+        
         models: { //banco de dados ficticio
             user: Model.extend<Partial<User>>({ //Partial = Talvez tenha dados que nao possuam tudo o que foi informado no User
 
