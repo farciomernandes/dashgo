@@ -1,4 +1,4 @@
-import {  createServer, Factory, Model } from 'miragejs';
+import {  createServer, Factory, Model, Response } from 'miragejs';
 import faker from 'faker'; //Lib que cria dados fakes
 
 type User = {
@@ -30,7 +30,7 @@ export function makeServer(){
         },
 
         seeds(server){ //Dados iniciais na api fake
-            server.createList('user', 10); //nome da factories que deve criar e quantidade
+            server.createList('user', 200); //nome da factories que deve criar e quantidade
         },
 
         routes(){
@@ -38,7 +38,25 @@ export function makeServer(){
             this.namespace = 'api'; //avisa que para chamar o '/users' é preciso por '/api' antes
             this.timing = 750; //avisa que a api deve aguardar 0.75s para resolver
 
-            this.get("/users"); //Shorthands => O miragejs entende pelo nome da rota que deve retornar todos os itens da tabela com o nome da rota
+            this.get("/users", function(schema, request){
+                const { page = 1, per_page = 10 } = request.queryParams;
+            
+                const total = schema.all('user').length;
+
+                const pageStart = (Number(page) - 1) * Number(per_page);
+                const pageEnd = pageStart + Number(per_page);
+                
+                const users = this.serialize(schema.all('user'))
+                    .users.slice(pageStart, pageEnd);
+
+                    return new Response(
+                        200,
+                        {'x-total-count': String(total)},
+                        { users }
+                    );
+
+
+            }); //Shorthands => O miragejs entende pelo nome da rota que deve retornar todos os itens da tabela com o nome da rota
             this.post("/users"); //Shorthands => O miragejs entende pelo nome da rota que deve adicionar um item na tabela com o nome da rota
             
             this.namespace = '' ;
